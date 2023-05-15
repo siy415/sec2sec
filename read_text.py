@@ -12,9 +12,9 @@ import sys, re
 DEBUG = True
 
 from Korpora import Korpora as kor, KorNLIKorpus as knl
-from konoise import NoiseGenerator
 
-gen = NoiseGenerator(num_cores=8)
+from test import *
+
 noise = ["disattach-letters", "change-vowels", "linking", "liquidization", "nasalization", "assimilation"]
 
 if DEBUG and False:
@@ -23,23 +23,33 @@ if DEBUG and False:
 
 corpus = knl()
 
-texts = [c.pair for c in corpus.snli_train if not re.compile('[ㄱ-ㅎㅏ-ㅣa-zA-Z0-9一-龥]').search(c.pair)]
-# noise_texts = [gen.generate(t, n, 0.5) for t in texts for n in noise]
+corpus_list = {"train": corpus.snli_train, "test": corpus.xnli_test}
 
-a = gen.generate(texts[0], noise[0], 0.5, use_rust_tokenizer=True)
+for key, corpus_set in corpus_list.items():
+    texts = [c.pair for c in corpus_set if not re.compile('[ㄱ-ㅎㅏ-ㅣa-zA-Z0-9一-龥]').search(c.pair)]
+    dataset = ""
+    for idx in range(len(texts)):
+        add_letter = addLetter(texts[idx])
+        erase_letter = eraseLetter(texts[idx])
+        disattach_letter = disattachLetters(texts[idx])
+        changed_letter = changeVowels(texts[idx])
+        liquidizated_letter = liquidization(texts[idx])
 
-if DEBUG:
-    idx = 0
-    # for t in texts[0:50]:
-    #     # print("#", idx, corpus.snli_train[idx].pair)
-    #     print("*", idx, t)
-    #     idx = idx + 1
+        dataset += add_letter + '\t' + texts[idx] + '\n' if add_letter != texts[idx] else ''
+        dataset += erase_letter + '\t' + texts[idx] + '\n' if erase_letter != texts[idx] else ''
+        dataset += disattach_letter + '\t' + texts[idx] + '\n' if disattach_letter != texts[idx] else ''
+        dataset += changed_letter + '\t' + texts[idx] + '\n' if changed_letter != texts[idx] else ''
+        dataset += liquidizated_letter + '\t' + texts[idx] + '\n' if liquidizated_letter != texts[idx] else ''
 
-    # for t in noise_texts[0:50]:
-    #     # print("#", idx, corpus.snli_train[idx].pair)
-    #     print("*", idx, t)
-    #     idx = idx + 1
+        if idx % 10000 == 0: 
+            print("--------[{}] generating noises[{}/{}({:.2f}%)]-------------".format(key, idx, len(texts), idx/len(texts)*100))
+            print("original:         ", texts[idx])
+            print("addLetter:        ", add_letter)
+            print("eraseLetter:      ", erase_letter)
+            print("disattachLetters: ", disattach_letter)
+            print("changeVowels:     ", changed_letter)
+            print("liquidization:    ", liquidizated_letter)
 
-
-# a = re.compile('[ㄱ-ㅎㅏ-ㅣa-zA-Z0-9一-龥]').match(texts[26])
-# print(a, texts[26])
+    print("--------generating {} dataset---------".format(key))
+    f = open(".\{}.txt".format(key), 'w')
+    f.write(dataset)
