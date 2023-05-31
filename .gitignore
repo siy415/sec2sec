@@ -1,0 +1,6 @@
+__pycache__/**
+image/**
+draft0526/**
+data/**
+encoder.pth
+decoder.pth
