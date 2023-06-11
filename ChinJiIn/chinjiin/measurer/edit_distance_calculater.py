@@ -1,4 +1,4 @@
-import sys
+import sys, os
 
 
 INF = float(sys.maxsize)
@@ -13,7 +13,7 @@ convert_dict = {
 distance_table = list()
 dist_table_path = 'cji_physical_distance_table.txt'
 if __name__ != '__main__':
-    dist_table_path = 'measurer/' + dist_table_path
+    dist_table_path = 'ChinJiIn\\chinjiin\\measurer' + os.sep + dist_table_path
 with open(dist_table_path, 'r') as f:
     for cnt in range(len(convert_dict)):
         distance_table.append(list(map(float, f.readline().split())))

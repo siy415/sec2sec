@@ -47,7 +47,7 @@ def deletes(word):
 
 def load_del_dict(dict_name):
     del_dict = dict()
-    cji_dict_file = 'converter/dict/%s_cji.txt' % dict_name
+    cji_dict_file = 'ChinJiIn\\chinjiin\\converter\\dict\\%s_cji.txt' % dict_name
     with open(cji_dict_file, 'rt', encoding='utf-8') as rf:
         for word in rf:
             word = word.split(':')[0]
@@ -83,4 +83,6 @@ def load_del_dict_by_file(dict_name, reset=False):
 
 
 if __name__ == '__main__':
-    DICT_PATH = 'dict/'
+    DICT_PATH = 'dict\\'
+else:
+    DICT_PATH = 'ChinJiIn\\chinjiin\\converter\\dict\\'

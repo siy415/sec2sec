@@ -143,4 +143,4 @@ if __name__ == '__main__':
     print(convert(testStr))
 
 else:
-    DICT_PATH = 'converter/dict/'
+    DICT_PATH = 'ChinJiIn\\chinjiin\\converter\\dict\\'
